@@ -14,7 +14,20 @@ const app = express();
 let numberOfRequestsForUser = {};
 setInterval(() => {
     numberOfRequestsForUser = {};
-}, 1000)
+}, 1000);
+
+function rateLimitMiddleWare(req,res,next){
+  const userId = req.header['user-id'];
+  const count = numberOfRequestsForUser[userId] || 0;
+
+  if(count >= 5){
+    return res.status(404).json({msg : "Rate Limit Error"});
+  }
+  numberOfRequestsForUser[userId] = count + 1;
+  next();
+}
+
+app.use(rateLimitMiddleWare);
 
 app.get('/user', function(req, res) {
   res.status(200).json({ name: 'john' });
