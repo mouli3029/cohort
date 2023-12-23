@@ -23,4 +23,13 @@ app.get('/errorCount', function(req, res) {
   res.status(200).json({ errorCount });
 });
 
+// If the middleware has four aruguments, then express recognizes this as a error handler.
+function errorHandlerMiddleware(err,req,res,next){
+  res.status(404).send({})
+    errorCount++;
+  next();
+}
+
+app.use(errorHandlerMiddleware);
+
 module.exports = app;
